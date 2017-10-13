@@ -1,0 +1,60 @@
+<div id="{{listing.list_id}}">
+    <div class="thumbnail photo-card">
+        <p class="status-label">
+            <span [ngClass]="{'label label-for-sale': listing.status == 'Active', 'label label-pending': listing.status == 'Pending'}">
+                {{listing.status}}
+            </span>
+        </p>
+        <a (click)="getAreaAndMlsDetails(listing.area_name, listing.mls_num)">
+            <img [ngClass]="listing.photos[0] ? 'img-responsive img-drop-shadow' : 'img-responsive'" [src]="listing.photos[0] ? getImages()[0] : 'https://source.unsplash.com/wtrAchtpc-w'">
+            <p *ngIf="!getImages()[0]" class="no-image-header">No Images <i class="fa fa-frown-o" aria-hidden="true"></i></p>
+        </a>
+        <div>
+            <a *ngIf="!(isLoggedIn$ | async)" data-toggle="modal" data-target="#loginModal">
+                <i class="fa fa-star-o fa-2x" aria-hidden="true"></i>
+            </a>
+            <a *ngIf="(isLoggedIn$ | async) && !isFavourite" (click)="toggleFavourite()">
+                <i [ngClass]="listing.isFavourite ? 'fa fa-star fa-2x' : 'fa fa-star-o fa-2x'" class="toggleFavourite" aria-hidden="true"></i>
+            </a>
+            <a *ngIf="(isLoggedIn$ | async) && isFavourite" (click)="toggleFavourite()">
+                <i class="fa fa-remove fa-2x" aria-hidden="true"></i>
+            </a>
+            <a *ngIf="(isLoggedIn$ | async) && isFavourite" (click)="toggleEmailOptOut()">
+                <i [ngClass]="listing.isOptEmail ? 'fa fa-envelope fa-2x' : 'fa fa-envelope-o fa-2x'" class="toggleFavouriteEmail" aria-hidden="true"></i>
+            </a>
+            <i *ngIf="(isLoggedIn$ | async) && listing.hasChanges" class="fa fa-exclamation-circle" aria-hidden="true"></i>
+        </div>
+        <a (click)="getAreaAndMlsDetails(listing.area_name, listing.mls_num)">
+            <section class="photo-card-info-spec-row1">
+                <span class="photo-card-price">${{listing.price | convertNumber}}</span>
+                <span *ngIf="listing.property_type.includes('Land');" class="photo-card-info">
+                    {{listing.property_type}}
+                    <span class="photo-card-punct">|</span>
+                    {{listing.acres}} acres
+                </span>
+                <span *ngIf="!listing.property_type.includes('Land');" class="photo-card-info">
+                    {{listing.beds}} bd
+                    <span class="photo-card-punct">|</span>
+                    {{listing.baths}} ba
+                    <span class="photo-card-punct">|</span>
+                    {{listing.square_feet | convertNumber}} sqft
+                </span>
+            </section>
+            <section class="photo-card-info-spec-row2">
+                <span class="photo-card-dom">
+                    <span class="dom">dom:</span>
+                    {{listing.days_on_market}}
+                    {{listing.area_name}}
+                </span>
+
+                <span class="photo-card-punct">|</span>
+
+                <span class="photo-card-address">
+                    {{listing.address}},
+                    {{listing.city}},
+                    {{listing.state}}
+                </span>
+            </section>
+        </a>
+    </div>
+</div>

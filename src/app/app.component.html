@@ -1,0 +1,12 @@
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<div class="container">
+    <navbar [user]="user"></navbar>
+    <div id="headerImage"></div>
+
+    <!-- Components will be loaded here based on the current URL -->
+    <router-outlet></router-outlet>
+
+    <footer class="footer"></footer>
+</div>

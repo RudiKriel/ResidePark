@@ -1,0 +1,51 @@
+#welcome-header {
+    text-align: center;
+    font-size: 75px;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+    color: #292929;
+    font-weight: 500;
+}
+
+#featured-listings {
+    text-align: left;
+    font-size: 36px;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-bottom: 10px;
+    color: #292929;
+    font-weight: 500;
+}
+
+#related-listings {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.grid-list {
+    margin-bottom: 2.5em;
+}
+
+#filter-btns {
+    padding-top: 15px ;
+    padding-right: 15px;
+    float: right;
+}
+
+.btn-dropdown-filter{
+    color: white;
+    background-color: #292929;
+}
+
+p.no-image-header{
+    position: absolute;
+    top: 25%;
+    color: white;
+    padding-left: 5%;
+    font-weight: bold;
+    font-size: 45px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -1,0 +1,40 @@
+#headerImage {
+    width: 100%;
+    height: 500px;
+    background-image: url(http://res.cloudinary.com/simpleview/image/upload/v1492455863/clients/parkcity/CB_Summer_Main_Street_Trolley_024e2ee4-fe7f-40ed-9a9f-98cb732ca017.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position-y: -100px;
+}
+
+.form-control:focus {
+    border-color: #73ED68;
+    -webkit-box-shadow: inset 0 1px 1px rgba(115,237,104, .075), 0 0 8px rgba(115,237,104, .2);
+    box-shadow: inset 0 1px 1px rgba(115,237,104, .075), 0 0 8px rgba(115,237,104, .2);
+}
+
+.btn-custom {
+    color: #333;
+    background-color: #73ED68;
+    border-color: #73ED68;
+    border-radius: 20px;
+}
+
+.btn-custom:hover {
+    color: white;
+    background-color: #57C44D;
+    border-color: #57C44D;
+    border-radius: 20px;
+}
+
+.footer {
+    position: relative;
+    display: block;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    line-height: 100px;
+    background-color: #292929;
+}

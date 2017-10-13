@@ -1,0 +1,83 @@
+<ng-container *ngIf="listing">
+    <div class="container">
+        <div class="col-xs-12">
+            <h1 id="community-header">{{listing.address}}</h1>
+        </div>
+    </div>
+
+    <hr>
+
+    <div id="wrapper">
+        <forms [listing]="listing"></forms>
+        <div class="community-image-container">
+            <ng-container *ngIf="isDetail">
+                <a class="glyphicon glyphicon-chevron-left" (click)="imageScroll(image, 'prev')"></a>
+                <img #image [ngClass]="listing.photos[0] ? 'community-image img-drop-shadow glyphicon glyphicon-chevron-right' : 'img-responsive'" [src]="imgSrc"
+                     [attr.photos]="listing.photos ? listing.photos : 'https://source.unsplash.com/wtrAchtpc-w'">
+
+                <a class="glyphicon glyphicon-chevron-right" (click)="imageScroll(image, 'next')"></a>
+            </ng-container>
+            <ng-container *ngIf="!isDetail">
+                <a *ngIf="index > 0" class="glyphicon glyphicon-chevron-left" (click)="listingScroll(listing.mls_num, 'prev')"></a>
+                <a id="area-image" (click)="getAreaAndMlsDetails(listing.area_name, listing.mls_num)">
+                    <img #image [ngClass]="listing.photos[0] ? 'community-image img-drop-shadow glyphicon glyphicon-chevron-right' : 'img-responsive'" [src]="imgSrc"
+                    [attr.photos]="listing.photos ? listing.photos : 'https://source.unsplash.com/wtrAchtpc-w'">
+                </a>
+                <a *ngIf="index < this.areaListings.length - 1" class="glyphicon glyphicon-chevron-right" (click)="listingScroll(listing.mls_num, 'next')"></a>
+            </ng-container>
+            <p *ngIf="!getImages()[0]" class="no-image-header">No Images <i class="fa fa-frown-o" aria-hidden="true"></i></p>
+            <div class="row">
+                <div id="listing-info-chart">
+                    <div *ngIf="isDetail" class="thumbnail-container">
+                        <ul class="thumbnail-list">
+                            <li *ngFor="let photo of getImages()">
+                                <span *ngIf="photo"><img #image class="thumbnail-image" [src]="photo" (click)="imageSelect(image)"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-12 publicRemarks">
+                        <p class="smart-overflow public-remarks">
+                            {{listing.publicremarks}}
+                        </p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>${{listing.price}}</p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>{{listing.beds}} Beds</p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>{{listing.baths}} Baths</p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>MLS#: {{listing.mls_num}}</p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>{{listing.square_feet}} Sqft</p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>DOM: {{listing.days_on_market}}</p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>{{listing.property_type}}</p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>{{listing.status}}</p>
+                    </div>
+                    <div *ngIf="isDetail" class="col-xs-4">
+                        <hr>
+                        <p>{{listing.subdivision}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

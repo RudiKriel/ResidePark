@@ -1,0 +1,18 @@
+.footer {
+    position: relative;
+    display: block;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    line-height: 100px;
+    background-color: #292929;
+}
+
+.footer-col{
+    text-align: center;
+}
+
+.footer-col:hover{
+    background-color: #73ED68;
+    transition: 0.3s;
+}

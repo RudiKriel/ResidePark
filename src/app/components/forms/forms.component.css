@@ -1,0 +1,33 @@
+#request-panel {
+    background-color: #E0E0E0;
+    width: 335px;
+    height: 504px;
+    float: left;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+.panel-default > .panel-heading {
+    text-align: center;
+    color: white;
+    background-color: #292929;
+    border-color: #292929;
+}
+
+.custom-submit-btn {
+    color: #333;
+    background-color: #73ED68;
+    border-color: #73ED68;
+    border-radius: 20px;
+    margin: 0 auto;
+    display: block;
+}
+
+h3.panel-heading {
+    margin: 0;
+}
+
+div.form-group.req-panel-spacing,
+textarea.form-control.req-panel-spacing {
+    margin-bottom: 15px;
+}

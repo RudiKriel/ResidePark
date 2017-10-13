@@ -1,0 +1,73 @@
+.photo-card {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.photo-card:hover {
+    background-color: #F2F2F2;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.photo-card-price {
+    font: 400 24px Poppins, Sans-Serif;
+    letter-spacing: 0.5px;
+}
+
+.photo-card-info,
+.photo-card-punct {
+    font: 400 15px Poppins, Sans-Serif;
+    letter-spacing: -0.5px;
+}
+
+.photo-card-info-spec-row1 {
+    color: #292929;
+    line-height: 1.45;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.photo-card-info-spec-row2 {
+    color: #636363;
+    font: 500 15px Poppins, Sans-Serif;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.label-for-sale {
+    background-color: #21E310;
+}
+
+.label-pending {
+    background-color: #FFA200;
+}
+
+.label {
+    display: inline;
+    padding: .025em .5em;
+    font-size: 75%;
+    color: #fff;
+    text-align: center;
+}
+
+.photo-card-dom {
+    text-transform: uppercase;
+}
+
+p.status-label {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    -webkit-filter: drop-shadow(1px 1px 4px #616161); /* Safari */
+    filter: drop-shadow(1px 1px 4px #616161);
+}
+
+p {
+    margin: 0;
+    z-index: 2;
+    color: white;
+}

@@ -1,0 +1,10 @@
+#headerImage {
+    width: 100%;
+    height: 500px;
+    background-image: url(http://res.cloudinary.com/simpleview/image/upload/v1492455863/clients/parkcity/CB_Summer_Main_Street_Trolley_024e2ee4-fe7f-40ed-9a9f-98cb732ca017.jpg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position-y: -100px;
+}

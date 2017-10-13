@@ -1,0 +1,63 @@
+<div id="signupModal" class="modal fade" role="dialog">
+    <div class="modal-dialog margin-auto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a><i class="fa fa-close" data-dismiss="modal" #closeBtn></i></a>
+            </div>
+            <div class="modal-body">
+                <alert></alert>
+                <h2 class="text-center text-uppercase">Register to Your Account</h2>
+                <form name="form" [formGroup]="signupForm" (ngSubmit)="signupForm.valid && signup(signupForm.value)" novalidate>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="username" placeholder="Username" formControlName="username" [formControl]="signupForm.controls['username']">
+                        <div *ngIf ="signupForm.controls['username'].touched">
+                            <div *ngIf ="!signupForm.controls['username'].valid" class="has-error">
+                                <div *ngIf="signupForm.controls['username'].hasError('required')" class="help-block">Username is required</div>
+                                <div *ngIf="signupForm.controls['username'].hasError('invalidUsername')" class="help-block">Username is invalid</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="firstName" placeholder="First Name" formControlName="firstName" [formControl]="signupForm.controls['firstName']">
+                        <div *ngIf ="signupForm.controls['firstName'].touched">
+                            <div *ngIf ="!signupForm.controls['firstName'].valid" class="has-error">
+                                <div *ngIf="signupForm.controls['firstName'].hasError('required')" class="help-block">First name is required</div>
+                                <div *ngIf="signupForm.controls['firstName'].hasError('invalidName')" class="help-block">First name is invalid</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="lastName" placeholder="Last Name" formControlName="lastName" [formControl]="signupForm.controls['lastName']">
+                        <div *ngIf ="signupForm.controls['lastName'].touched">
+                            <div *ngIf ="!signupForm.controls['lastName'].valid" class="has-error">
+                                <div *ngIf="signupForm.controls['lastName'].hasError('required')" class="help-block">Last name is required</div>
+                                <div *ngIf="signupForm.controls['lastName'].hasError('invalidName')" class="help-block">Last name is invalid</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="password" placeholder="Password" minlength="6" formControlName="password" [formControl]="signupForm.controls['password']">
+                        <div *ngIf ="signupForm.controls['password'].touched">
+                            <div *ngIf ="!signupForm.controls['password'].valid" class="has-error">
+                                <div *ngIf="signupForm.controls['password'].hasError('required')" class="help-block">Password is required</div>
+                                <div *ngIf="signupForm.controls['password'].hasError('minlength')" class="help-block">Password should be longer than 6 characters</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="confirm-password" placeholder="Confirm Password" formControlName="confirmPassword" [formControl]="signupForm.controls['confirmPassword']">
+                        <div *ngIf ="signupForm.controls['confirmPassword'].touched">
+                            <div *ngIf="signupForm.hasError('mismatchedPasswords')" class="has-error">
+                                <div class="help-block">Passwords do not match</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="form-control btn-primary" value="Signup">
+                    </div>
+                </form>
+                <p><a class="small modal-links" href="#" data-dismiss="modal" data-toggle="modal" data-target="#loginModal">Cancel</a></p>
+            </div>
+        </div>
+    </div>
+</div>

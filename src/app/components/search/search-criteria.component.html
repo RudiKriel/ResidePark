@@ -1,0 +1,72 @@
+<div class="container">
+    <h1 *ngIf="!isRecentSearch" id="search-criteria">Favourite Searches</h1>
+    <h1 *ngIf="isRecentSearch" id="search-criteria">Recent Searches</h1>
+    <ng-container *ngIf="(searches$ | async)?.length > 0">
+        <div class="row">
+            <div class="col-lg-2">
+                <p>Min Price</p>
+            </div>
+            <div class="col-lg-2">
+                <p>Max Price</p>
+            </div>
+            <div class="col-lg-1">
+                <p>Beds</p>
+            </div>
+            <div *ngIf="!isRecentSearch" class="col-lg-3">
+                <p>Property Type</p>
+            </div>
+            <div *ngIf="isRecentSearch" class="col-lg-4">
+                <p>Property Type</p>
+            </div>
+            <div class="col-lg-3">
+                <p>Criteria</p>
+            </div>
+            <div *ngIf="!isRecentSearch" class="col-lg-1">
+                <p>Options</p>
+            </div>
+        </div>
+        <div class="row" *ngFor="let s of searches$ | async">
+            <a (click)="search(s)">
+            <div class="col-lg-2">
+                <a (click)="search(s)">
+                    <span *ngIf="s.minPrice == ''">$-</span>
+                    <span *ngIf="s.minPrice != ''">${{s.minPrice | convertNumber}}</span>
+
+                </a>
+            </div>
+            <div class="col-lg-2">
+                <span *ngIf="s.maxPrice == ''">$-</span>
+                <span *ngIf="s.maxPrice != ''">${{s.maxPrice | convertNumber}}</span>
+            </div>
+            <div class="col-lg-1">
+                <span *ngIf="s.beds == ''">-</span>
+                <span *ngIf="s.beds != ''">{{s.beds}}</span>
+
+            </div>
+            <div *ngIf="!isRecentSearch" class="col-lg-3">
+                <span *ngIf="s.propertyType == ''">-</span>
+                <span *ngIf="s.propertyType != ''">{{s.properties}}</span>
+            </div>
+            <div *ngIf="isRecentSearch" class="col-lg-4">
+                <span *ngIf="s.propertyType == ''">-</span>
+                <span *ngIf="s.propertyType != ''">{{s.properties}}</span>
+            </div>
+            <div class="col-lg-3">
+                <span *ngIf="s.criteria == ''">-</span>
+                <span *ngIf="s.criteria != ''">{{s.criteria}}</span>
+            </div>
+            </a>
+            <div *ngIf="!isRecentSearch" class="col-lg-1">
+                <a (click)="removeSearch(s.id)"><i class="fa fa-remove fa-2x" aria-hidden="true"></i></a>
+                <a (click)="toggleEmailOptOut(s.id)">
+                    <i [ngClass]="s.isOptEmail ? 'fa fa-envelope fa-2x' : 'fa fa-envelope-o fa-2x'" class="toggleSearchEmail" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </ng-container>
+    <div *ngIf="(searches$ | async)?.length == 0" class="row">
+        <div class="col-lg-12">
+            <p>No search criteria to display</p>
+        </div>
+    </div>
+</div>

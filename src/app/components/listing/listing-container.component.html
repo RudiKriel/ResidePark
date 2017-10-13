@@ -1,0 +1,66 @@
+<h1 *ngIf="!search" id="welcome-header">Park City, UT</h1>
+<listing-detail *ngIf="search && isDetailSearch"></listing-detail>
+<div *ngIf="search && isDetailSearch" id="google-map"></div>
+
+<div class="container">
+    <h1 *ngIf="!search && !isFavourite" id="featured-listings">Featured Listings</h1>
+    <h1 *ngIf="search" id="related-listings">Related Listings</h1>
+    <h1 *ngIf="isFavourite" id="favourite-listings">Favourite Listings</h1>
+</div>
+
+<div *ngIf="(listings$ | async) && (listings$ | async).length > 0" class="row grid-list">
+    <div *ngIf="search" class="container">
+        <div class="col-xs-6">
+            <div id="filter-btns">
+                <!-- Filter button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle btn-dropdown-filter drop-shadow "
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Filter <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu filter-menu">
+                        <li *ngFor="let f of filters" (click)="filter(f)">{{f}}</li>
+                    </ul>
+                </div>
+
+                <!-- Ascending/Descending button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle btn-dropdown-filter drop-shadow "
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Sort <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu sort-menu">
+                        <li *ngFor="let s of sorting" (click)="sort(s)">{{s}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row grid-list" style="display:flex; flex-wrap: wrap">
+    <div>
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+    </div>
+    <div class="container listingGrid" *ngIf="(listings$ | async) && (listings$ | async)?.length > 0">
+        <ng-container *ngIf="!isFavourite">
+            <div class="col-lg-4 col-md-4 col-sm-6 listingContainer" *ngFor="let listing of (listings$ | async | orderBy: [column])">
+                <listing [listing]="listing" [user]="user"></listing>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="isFavourite">
+            <div class="col-lg-4 col-md-4 col-sm-6 listingContainer" *ngFor="let listing of (listings$ | async | orderBy: ['-price'])">
+                <listing [listing]="listing" [user]="user"></listing>
+            </div>
+        </ng-container>
+    </div>
+    <div class="container noListings" style="display: none;">
+        <p>No listings to display</p>
+    </div>
+</div>
+
+<div>
+    <input *ngIf="(listings$ | async) && (listings$ | async)?.length < (totalCount$ | async) && (totalCount$ | async) > 12" type="button" id="loadMore" value="Load More" (click)="loadMore()" />
+</div>

@@ -1,0 +1,63 @@
+<section id="request-panel" class="panel panel-default custom-panel-background">
+    <div class="panel-heading custom-panel-heading">
+        <h3 class="panel-heading"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span>Have A Question?</h3>
+    </div>
+    <div class="panel-body">
+        <form class="form-inline" [formGroup]="questionForm" (ngSubmit)="questionForm.valid && sendEmail(questionForm.value)" novalidate>
+            <div class="form-group req-panel-spacing">
+                <label for="req-panel-first-name">First Name</label>
+                <input type="text" class="form-control" id="req-panel-first-name" placeholder="Johnny" formControlName="firstName" [formControl]="questionForm.controls['firstName']">
+                <div *ngIf ="questionForm.controls['firstName'].touched">
+                    <div *ngIf ="!questionForm.controls['firstName'].valid" class="has-error">
+                        <div *ngIf="questionForm.controls['firstName'].hasError('required')" class="help-block">First name is required</div>
+                        <div *ngIf="questionForm.controls['firstName'].hasError('invalidName')" class="help-block">First name is invalid</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group req-panel-spacing">
+                <label for="req-panel-last-name">Last Name</label>
+                <input type="text" class="form-control" id="req-panel-last-name" placeholder="Appleseed" formControlName="lastName" [formControl]="questionForm.controls['lastName']">
+                <div *ngIf ="questionForm.controls['lastName'].touched">
+                    <div *ngIf ="!questionForm.controls['lastName'].valid" class="has-error">
+                        <div *ngIf="questionForm.controls['lastName'].hasError('required')" class="help-block">Last name is required</div>
+                        <div *ngIf="questionForm.controls['lastName'].hasError('invalidName')" class="help-block">Last name is invalid</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group req-panel-spacing">
+                <label for="req-panel-phone">Phone</label>
+                <input type="text" class="form-control" id="req-panel-phone" placeholder="(555) 555-5555" formControlName="phone" [formControl]="questionForm.controls['phone']">
+                <div *ngIf ="questionForm.controls['phone'].touched">
+                    <div *ngIf ="!questionForm.controls['phone'].valid" class="has-error">
+                        <div *ngIf="questionForm.controls['phone'].hasError('required')" class="help-block">Phone is required</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group req-panel-spacing">
+                <label for="req-panel-last-name">Email</label>
+                <input type="email" class="form-control" id="req-panel-email" placeholder="john@example.com" formControlName="email" [formControl]="questionForm.controls['email']">
+                <div *ngIf ="questionForm.controls['email'].touched">
+                    <div *ngIf ="!questionForm.controls['email'].valid" class="has-error">
+                        <div *ngIf="questionForm.controls['email'].hasError('required')" class="help-block">Email is required</div>
+                        <div *ngIf="questionForm.controls['email'].hasError('invalidUsername')" class="help-block">Email is invalid</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group req-panel-spacing">
+                <label for="req-panel-last-name">Question</label>
+                <textarea class="form-control req-panel-spacing" rows="5" placeholder="Leave a question or comment here..." formControlName="body" [formControl]="questionForm.controls['body']"></textarea>
+                <div *ngIf ="questionForm.controls['body'].touched">
+                    <div *ngIf ="!questionForm.controls['body'].valid" class="has-error">
+                        <div *ngIf="questionForm.controls['body'].hasError('required')" class="help-block">Email is required</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group req-panel-spacing">
+                <button class="btn btn-default custom-submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
+</section>

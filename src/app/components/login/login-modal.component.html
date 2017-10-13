@@ -1,0 +1,39 @@
+<div id="loginModal" class="modal fade" role="dialog">
+    <div class="modal-dialog margin-auto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a><i class="fa fa-close" data-dismiss="modal" #closeBtn></i></a>
+            </div>
+            <div class="modal-body">
+                <alert></alert>
+                <h2 class="text-center text-uppercase">Login to Your Account</h2>
+                <form name="form"[formGroup]="loginForm" (ngSubmit)="loginForm.valid && login(loginForm.value)" novalidate>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="username" placeholder="Username" [formControl]="loginForm.controls['username']">
+                        <div *ngIf ="loginForm.controls['username'].touched">
+                            <div *ngIf ="!loginForm.controls['username'].valid" class="has-error">
+                                <div *ngIf="loginForm.controls['username'].hasError('required')" class="help-block">Username is required</div>
+                                <div *ngIf="loginForm.controls['username'].hasError('invalidUsername')" class="help-block">Username is invalid</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" id="password" placeholder="Password" minlength="6" formControlName="password" [formControl]="loginForm.controls['password']">
+                        <div *ngIf ="loginForm.controls['password'].touched">
+                            <div *ngIf ="!loginForm.controls['password'].valid" class="has-error">
+                                <div *ngIf="loginForm.controls['password'].hasError('required')" class="help-block">Password is required</div>
+                                <div *ngIf="loginForm.controls['password'].hasError('minlength')" class="help-block">Password should be longer than 6 characters</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="form-control btn-primary" value="Login">
+                    </div>
+                </form>
+                <p><a class="small modal-links" href="#" data-dismiss="modal" data-toggle="modal" data-target="#signupModal">Register</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<signupModal></signupModal>
