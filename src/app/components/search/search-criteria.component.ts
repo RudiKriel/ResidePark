@@ -27,13 +27,13 @@ export class SearchCriteriaComponent implements OnInit {
     ngOnInit(): void {
         if (this._router.url === '/searches') {
             this.isRecentSearch = false;
-            let data = this._favouriteHelper.getData('getSearches', this.user.id);
+            let data = this._favouriteHelper.getData('searches', 'getSearches', this.user.id);
 
             this._favouritesService.getSearches(data);
         }
         else {
             this.isRecentSearch = true;
-            let data = this._favouriteHelper.getData('getRecentSearches', this.user.id);
+            let data = this._favouriteHelper.getData('searches', 'getRecentSearches', this.user.id);
 
             this._favouritesService.getSearches(data);
         }
@@ -43,7 +43,8 @@ export class SearchCriteriaComponent implements OnInit {
 
     removeSearch(criteriaId: number): void {
         let data = {
-            action: 'removeSearch',
+            action: 'searches',
+            subAction: 'removeSearch',
             criteriaId: criteriaId
         };
 
@@ -52,7 +53,7 @@ export class SearchCriteriaComponent implements OnInit {
 
             if (confirm('Are you sure you want to delete this listing from your favourites?')) {
                 this._favouritesService.removeSearch(searchData).subscribe(() => {
-                    let getData = this._favouriteHelper.getData('getSearches', this.user.id);
+                    let getData = this._favouriteHelper.getData('searches', 'getSearches', this.user.id);
                     this._favouritesService.getSearches(getData);
                 });
             }
@@ -61,7 +62,8 @@ export class SearchCriteriaComponent implements OnInit {
 
     toggleEmailOptOut(criteriaId: number): void {
         let data = {
-            action: 'emailOpt',
+            action: 'searches',
+            subAction: 'emailOpt',
             criteriaId: criteriaId
         };
 

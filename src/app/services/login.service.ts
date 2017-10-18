@@ -17,7 +17,7 @@ export class LoginService {
     private _isLoggedIn = new BehaviorSubject<boolean>(this.hasToken());
 
     constructor(private _http: Http, private _listingHelper: ListingHelper) {
-        this._url = config.api + 'login.php';
+        this._url = config.api;
         this._headers = new Headers({
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Accept': 'q=0.8;application/json;q=0.9'

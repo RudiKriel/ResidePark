@@ -25,6 +25,8 @@ export class SignupModalComponent {
     }
 
     signup(value: any): void {
+        value['action'] = 'signup';
+
         this._signupService.signup(value).then(() => {
             let alert = this._alertService;
             let success = localStorage.getItem('success');

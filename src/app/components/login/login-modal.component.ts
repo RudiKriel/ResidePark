@@ -22,6 +22,8 @@ export class LoginModalComponent {
     }
 
     login(value: any): void {
+        value['action'] = 'login';
+
         this._loginService.login(value).then(()=> {
             let alert = this._alertService;
             let success = localStorage.getItem('success');

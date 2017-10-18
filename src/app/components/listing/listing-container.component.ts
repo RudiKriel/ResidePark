@@ -141,7 +141,7 @@ export class ListingContainerComponent implements OnInit {
             this._listingService.getListings(data, this.user);
         }
         else {
-            let favouriteData = this._favouriteHelper.getData('getFavourites', this.user.id);
+            let favouriteData = this._favouriteHelper.getData('favourites', 'getFavourites', this.user.id);
 
             this._favouritesService.getFavourites(favouriteData).subscribe(res => {
                 let mls: string[] = [];

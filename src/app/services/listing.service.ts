@@ -13,6 +13,7 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class ListingService {
     private _url: string;
+    private _apiUrl: string;
     private _headers: Headers;
     private _options: RequestOptions;
     private _listings = new BehaviorSubject<any>([]);
@@ -23,6 +24,8 @@ export class ListingService {
 
     constructor(private _http: Http, private _listingHelper: ListingHelper, private _favouriteHelper: FavouriteHelper) {
         this._url = 'https://secure.realcove.com/api.php?';
+        this._apiUrl = config.api;
+
         this._headers = new Headers({
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Accept': 'q=0.8;application/json;q=0.9'
@@ -69,8 +72,8 @@ export class ListingService {
         }
 
         if (user !== null) {
-            let favouriteData = this._favouriteHelper.getData('getFavourites', user.id);
-            this._http.post(config.api + 'favourites.php', favouriteData, this._options).map(res => res.json()).subscribe(res => {
+            let favouriteData = this._favouriteHelper.getData('favourites', 'getFavourites', user.id);
+            this._http.post(this._apiUrl, favouriteData, this._options).map(res => res.json()).subscribe(res => {
                 for (var i = 0; i < listings.data.length; i++) {
                     for (var j = 0; j < res.favourites.length; j++) {
                         if (listings.data[i].mls_num === res.favourites[j].mls) {

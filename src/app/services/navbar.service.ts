@@ -7,11 +7,15 @@ import { ListingHelper } from '../helpers/listing-helper';
 
 @Injectable()
 export class NavbarService {
-    private _url = 'https://secure.realcove.com/api.php?';
+    private _url: string;
+    private _apiUrl: string;
     private _headers: Headers;
     private _options: RequestOptions;
 
     constructor(private _http: Http, private _listingHelper: ListingHelper) {
+        this._url = 'https://secure.realcove.com/api.php?';
+        this._apiUrl = config.api;
+
         this._headers = new Headers({
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
             'Accept': 'q=0.8;application/json;q=0.9'
@@ -29,7 +33,6 @@ export class NavbarService {
     }
 
     saveCriteria(data: any): Observable<any> {
-        let url = config.api + 'searchCriteria.php';
-        return this._http.post(url, data, this._options);
+        return this._http.post(this._apiUrl, data, this._options);
     }
 }

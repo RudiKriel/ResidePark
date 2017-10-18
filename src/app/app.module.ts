@@ -26,7 +26,6 @@ import {
 import {
     AlertService,
     FavouritesService,
-    HomeService,
     ListingService,
     LoginService,
     NavbarService,
@@ -74,7 +73,6 @@ import {
         AlertService,
         AuthGuard,
         FavouritesService,
-        HomeService,
         LoginService,
         ListingService,
         NavbarService,

@@ -125,7 +125,7 @@ export class NavbarComponent implements OnInit {
     }
 
     getFavourites(): void {
-        let favouriteData = this._favouriteHelper.getData('getFavourites', this.user.id);
+        let favouriteData = this._favouriteHelper.getData('favourites', 'getFavourites', this.user.id);
 
         this._favouritesService.getFavourites(favouriteData).subscribe(res => {
             let mls: string[] = [];
@@ -152,7 +152,7 @@ export class NavbarComponent implements OnInit {
     }
 
     checkFavouritesChanged(): void {
-        let favouriteData = this._favouriteHelper.getData('getFavourites', this.user.id);
+        let favouriteData = this._favouriteHelper.getData('favouritesChanged', '', this.user.id);
 
         this._favouritesService.hasFavouritesChanged(favouriteData).subscribe(res => {
             this.favouritesChanged = res.hasChanges;
@@ -171,11 +171,11 @@ export class NavbarComponent implements OnInit {
 
     private getSearchCriteria(): void {
         if (this._router.url === '/searches') {
-            let favouriteData = this._favouriteHelper.getData('getSearches', this.user.id);
+            let favouriteData = this._favouriteHelper.getData('searches', 'getSearches', this.user.id);
             this._favouritesService.getSearches(favouriteData);
         }
         if (this._router.url === '/recentSearches') {
-            let favouriteData = this._favouriteHelper.getData('getRecentSearches', this.user.id);
+            let favouriteData = this._favouriteHelper.getData('searches', 'getRecentSearches', this.user.id);
             this._favouritesService.getSearches(favouriteData);
         }
     }
@@ -212,7 +212,8 @@ export class NavbarComponent implements OnInit {
         }
 
         let data = {
-            action: 'saveSearch',
+            action: 'searches',
+            subAction: 'saveSearch',
             userId: this.user.id,
             beds: this.bed,
             minPrice: minPrice,

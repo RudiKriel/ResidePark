@@ -10,7 +10,7 @@ export class SignupService {
     private _url: string;
 
     constructor(private _http: Http, private _listingHelper: ListingHelper) {
-        this._url = config.api + 'signup.php';
+        this._url = config.api;
     }
 
     signup(user: User): Promise<void> {

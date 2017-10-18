@@ -35,7 +35,8 @@ export class ListingComponent implements OnInit {
 
     toggleFavourite(): void {
         let data = {
-            action: 'saveFavourite',
+            action: 'favourites',
+            subAction: 'saveFavourite',
             userId: this.user.id,
             mls: this.listing.mls_num,
             price: this.listing.price,
@@ -63,7 +64,8 @@ export class ListingComponent implements OnInit {
 
     toggleEmailOptOut(): void {
         let data = {
-            action: 'emailOpt',
+            action: 'favourites',
+            subAction: 'emailOpt',
             userId: this.user.id,
             mls: this.listing.mls_num
         };

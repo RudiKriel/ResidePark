@@ -6,9 +6,10 @@ import { ListingHelper } from './listing-helper';
 export class FavouriteHelper {
     constructor(private _listingHelper: ListingHelper) {}
 
-    getData(action: string, userId: number) {
+    getData(action: string, subAction: string, userId: number) {
         let data = {
             action: action,
+            subAction: subAction,
             userId: userId
         };
 
