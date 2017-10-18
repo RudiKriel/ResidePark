@@ -1,44 +1,51 @@
 <?php
-    header("Access-Control-Allow-Origin:*");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-    header('Access-Control-Allow-Headers: X-HTTP-Method-Override, Content-Type, X-Requested-With');
-    header('Content-Type: application/json');
+    class FavouritesChanges
+    {
+        private $db;
+        private $userId;
 
-    require_once(dirname(__FILE__) . '/dbHandler.php');
+        public function __construct($parameters) {
+            require_once(dirname(__FILE__) . '/dbHandler.php');
 
-    $userId = $_POST['userId'];
-    $hasChanges = false;
-    $db = new Database();
+            $this->db = new Database();
+            $this->userId = $parameters['userId'];
+        }
 
-    $rows = $db->select("SELECT EE.UserID, EE.FavouriteID, U.Username, U.FirstName, U.LastName, F.MLSNumber, F.Price, F.Status FROM users U
-                         INNER JOIN emailevents EE ON EE.UserID = U.UserID
-                         INNER JOIN favourites F ON F.FavouriteID = EE.FavouriteID
-                         WHERE EE.IsSent = 0 AND EE.EventType = 'Favourite' AND F.UserID = '$userId' AND EE.IsDeleted = 0");
+        function favouritesChanged()
+        {
+            $hasChanges = false;
 
-    if (count($rows) > 0) {
-        include_once(dirname(__FILE__) . '/favouritesHelper.php');
+            $rows = $this->db->select("SELECT EE.UserID, EE.FavouriteID, U.Username, U.FirstName, U.LastName, F.MLSNumber, F.Price, F.Status FROM users U
+                                       INNER JOIN emailevents EE ON EE.UserID = U.UserID
+                                       INNER JOIN favourites F ON F.FavouriteID = EE.FavouriteID
+                                       WHERE EE.IsSent = 0 AND EE.EventType = 'Favourite' AND F.UserID = '$this->userId' AND EE.IsDeleted = 0");
 
-        $favouriteResponse = getFavourites($rows);
+            if (count($rows) > 0) {
+                include_once(dirname(__FILE__) . '/favouritesHelper.php');
 
-        if(!empty($favouriteResponse->mls)) {
-            $listings = getFavouriteListings($favouriteResponse->mls);
+                $favouriteResponse = getFavourites($rows);
 
-            if (!empty($listings) && !empty($favouriteResponse->favourites)) {
-                $changedListings = getChangedFavouriteListings($listings, $favouriteResponse->favourites);
+                if(!empty($favouriteResponse->mls)) {
+                    $listings = getFavouriteListings($favouriteResponse->mls);
 
-                if (!empty($changedListings)) {
-                    $hasChanges = true;
+                    if (!empty($listings) && !empty($favouriteResponse->favourites)) {
+                        $changedListings = getChangedFavouriteListings($listings, $favouriteResponse->favourites);
+
+                        if (!empty($changedListings)) {
+                            $hasChanges = true;
+                        }
+                    }
                 }
             }
+
+            $response = (object)(
+                array(
+                    'hasChanges' => $hasChanges,
+                    'rows' => $rows
+                )
+            );
+
+            echo json_encode($response);
         }
     }
-
-    $response = (object)(
-        array(
-            'hasChanges' => $hasChanges,
-            'rows' => $rows
-        )
-    );
-
-    echo json_encode($response);
 ?>

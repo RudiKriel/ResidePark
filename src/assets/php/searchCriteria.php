@@ -1,153 +1,168 @@
 <?php
-    header("Access-Control-Allow-Origin:*");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-    header('Access-Control-Allow-Headers: X-HTTP-Method-Override, Content-Type, x-requested-with');
-    header('Content-Type: application/json');
-
-    require_once(dirname(__FILE__) . '/dbHandler.php');
-
-    $action = $_POST['action'];
-
-    $db = new Database();
-    $response = new stdClass();
-
-    switch ($action) {
-        case 'saveSearch': saveSearch($_POST['userId'], $db);
-            break;
-        case 'removeSearch': removeSearch($_POST['criteriaId'], $db);
-            break;
-        case 'emailOpt': emailOpt($_POST['criteriaId'], $db);
-            break;
-        case 'getSearches': getSearhces($_POST['userId'], $db);
-            break;
-        case 'getRecentSearches': getRecentSearhces($_POST['userId'], $db);
-            break;
-    }
-
-    function saveSearch($userId, $db)
+    class Searches
     {
-        $beds = $_POST['beds'];
-        $minPrice = $_POST['minPrice'];
-        $maxPrice = $_POST['maxPrice'];
-        $propertyTypes = $_POST['properties'];
-        $criteria = $_POST['qry'];
+        private $db;
+        private $action;
+        private $userId;
+        private $criteriaId;
+        private $beds;
+        private $minPrice;
+        private $maxPrice;
+        private $propertyTypes;
+        private $criteria;
+        private $response;
 
-        if (!empty($beds) || !empty($minPrice) || !empty($maxPrice) || !empty($propertyTypes) || !empty($criteria)) {
-            $rows = $db->select("SELECT * FROM usersearchcriteria
-                                 WHERE UserID = '$userId' AND Beds = '$beds' AND MinPrice = '$minPrice' AND MaxPrice = '$maxPrice' AND Criteria = '$criteria' AND PropertyType = '$propertyTypes'");
+        public function __construct($parameters) {
+            require_once(dirname(__FILE__) . '/dbHandler.php');
 
-            if (count($rows) == 0) {
-                $timestamp = date('Y-m-d H:i:s', time());
+            $this->db = new Database();
+            $this->response = new stdClass();
 
-                $criteriaId = $db->insert("INSERT INTO usersearchcriteria (UserID, Beds, MinPrice, MaxPrice, PropertyType, Criteria, OptEmail, DateStamp, SavedDate)
-                                           VALUES ('$userId', '$beds', '$minPrice', '$maxPrice', '$propertyTypes', '$criteria', 1, '$timestamp', '$timestamp')");
+            $this->action = $parameters['subAction'];
+            $this->userId = isset($parameters['userId']) ? $parameters['userId'] : '';
+            $this->criteriaId = isset($parameters['criteriaId']) ? $parameters['criteriaId'] : '';
+            $this->beds = isset($parameters['beds']) ? $parameters['beds'] : '';
+            $this->minPrice = isset($parameters['minPrice']) ? $parameters['minPrice'] : '';
+            $this->maxPrice = isset($parameters['maxPrice']) ? $parameters['maxPrice'] : '';
+            $this->propertyTypes = isset($parameters['properties']) ? $parameters['properties'] : '';
+            $this->criteria = isset($parameters['qry']) ? $parameters['qry'] : '';
+        }
 
-                $db->insert("INSERT INTO emailevents (UserID, CriteriaID, EventType, IsSent, IsDeleted, DateStamp)
-                             VALUES ('$userId', '$criteriaId', 'Criteria', 0, 0, '$timestamp')");
+        function setSearches()
+        {
+            switch ($this->action) {
+                case 'saveSearch': $this->saveSearch();
+                    break;
+                case 'removeSearch': $this->removeSearch();
+                    break;
+                case 'emailOpt': $this->emailOpt();
+                    break;
+                case 'getSearches': $this->getSearhces();
+                    break;
+                case 'getRecentSearches': $this->getRecentSearhces();
+                    break;
+            }
+        }
 
-                $response = (object)(
+        private function saveSearch()
+        {
+            if (!empty($this->beds) || !empty($this->minPrice) || !empty($this->maxPrice) || !empty($this->propertyTypes) || !empty($this->criteria)) {
+                $rows = $this->db->select("SELECT * FROM usersearchcriteria
+                                           WHERE UserID = '$this->userId' AND Beds = '$this->beds' AND MinPrice = '$this->minPrice' AND MaxPrice = '$this->maxPrice' AND Criteria = '$this->criteria' AND PropertyType = '$this->propertyTypes'");
+
+                if (count($rows) == 0) {
+                    $timestamp = date('Y-m-d H:i:s', time());
+
+                    $this->criteriaId = $this->db->insert("INSERT INTO usersearchcriteria (UserID, Beds, MinPrice, MaxPrice, PropertyType, Criteria, OptEmail, DateStamp, SavedDate)
+                                                     VALUES ('$this->userId', '$this->beds', '$this->minPrice', '$this->maxPrice', '$this->propertyTypes', '$this->criteria', 1, '$timestamp', '$timestamp')");
+
+                    $this->db->insert("INSERT INTO emailevents (UserID, CriteriaID, EventType, IsSent, IsDeleted, DateStamp)
+                                       VALUES ('$this->userId', '$this->criteriaId', 'Criteria', 0, 0, '$timestamp')");
+
+                    $this->response = (object)(
+                        array(
+                            'msg' => 'Search criteria saved.'
+                        )
+                    );
+                } else {
+                    $this->response = (object)(
+                        array(
+                            'msg' => 'Search criteria was already saved previously.'
+                        )
+                    );
+                }
+            }
+            else {
+                $this->response = (object)(
                     array(
-                        'msg' => 'Search criteria saved.'
-                    )
-                );
-            } else {
-                $response = (object)(
-                    array(
-                        'msg' => 'Search criteria was already saved previously.'
+                        'msg' => 'Search criteria was not saved, no criteria was specified.'
                     )
                 );
             }
-        }
-        else {
-            $response = (object)(
-                array(
-                    'msg' => 'Search criteria was not saved, no criteria was specified.'
-                )
-            );
+
+            echo json_encode($this->response);
         }
 
-        echo json_encode($response);
-    }
-
-    function removeSearch($criteriaId, $db) {
-        $rows = $db->select("SELECT UC.CriteriaID, EE.CriteriaID FROM emailevents EE
-                             INNER JOIN usersearchcriteria UC ON UC.CriteriaID = EE.CriteriaID
-                             WHERE UC.CriteriaID = $criteriaId AND EE.IsDeleted = 0");
-
-        if (count($rows) > 0) {
-            $db->update("DELETE FROM usersearchcriteria
-                         WHERE CriteriaID = $criteriaId");
-
-            $db->update("UPDATE emailevents SET IsDeleted = 1
-                         WHERE CriteriaID = $criteriaId AND IsDeleted = 0");
-        }
-    }
-
-    function emailOpt($criteriaId, $db)
-    {
-        $rows = $db->select("SELECT EE.EventID FROM emailevents EE
-                             INNER JOIN usersearchcriteria UC ON UC.CriteriaID = EE.CriteriaID
-                             WHERE EE.CriteriaID = '$criteriaId' AND EE.EventType = 'Criteria' AND UC.OptEmail = 1 AND EE.IsDeleted = 0");
-
-        if (count($rows) > 0) {
-            $db->update("UPDATE usersearchcriteria SET OptEmail = 0
-                         WHERE CriteriaID = '$criteriaId' AND OptEmail = 1");
-        } else {
-            $rows = $db->select("SELECT EE.EventID FROM emailevents EE
-                                 INNER JOIN usersearchcriteria UC ON UC.CriteriaID = EE.CriteriaID
-                                 WHERE EE.CriteriaID = '$criteriaId' AND EE.EventType = 'Criteria' AND UC.OptEmail = 0 AND EE.IsDeleted = 0");
+        private function removeSearch() {
+            $rows = $this->db->select("SELECT UC.CriteriaID, EE.CriteriaID FROM emailevents EE
+                                       INNER JOIN usersearchcriteria UC ON UC.CriteriaID = EE.CriteriaID
+                                       WHERE UC.CriteriaID = $this->criteriaId AND EE.IsDeleted = 0");
 
             if (count($rows) > 0) {
-                $db->update("UPDATE usersearchcriteria SET OptEmail = 1
-                             WHERE CriteriaID = '$criteriaId' AND OptEmail = 0");
-            }
-        }
-    }
+                $this->db->update("DELETE FROM usersearchcriteria
+                                   WHERE CriteriaID = $this->criteriaId");
 
-    function getSearhces($userId, $db)
-    {
-        $rows = $db->select("SELECT * FROM usersearchcriteria
-                             WHERE UserID = '$userId'");
-
-        searches($rows);
-    }
-
-    function getRecentSearhces($userId, $db)
-    {
-        $rows = $db->select("SELECT * FROM usersearchcriteria
-                             WHERE UserID = '$userId'
-                             ORDER BY SavedDate DESC
-                             LIMIT 10");
-
-        searches($rows);
-    }
-
-    function searches($rows) {
-        $searches = array();
-
-        if (count($rows) > 0) {
-            foreach ($rows as $row) {
-                $criteria = new stdClass();
-
-                $criteria->id = $row['CriteriaID'];
-                $criteria->userId = $row['UserID'];
-                $criteria->minPrice = $row['MinPrice'];
-                $criteria->maxPrice = $row['MaxPrice'];
-                $criteria->beds = $row['Beds'];
-                $criteria->properties = $row['PropertyType'];
-                $criteria->criteria = $row['Criteria'];
-                $criteria->isOptEmail = $row['OptEmail'] == 1 ? true : false;
-
-                array_push($searches, $criteria);
+                $this->db->update("UPDATE emailevents SET IsDeleted = 1
+                                   WHERE CriteriaID = $this->criteriaId AND IsDeleted = 0");
             }
         }
 
-        $response = (object)(
-            array(
-                'searches' => $searches
-            )
-        );
+        private function emailOpt()
+        {
+            $rows = $this->db->select("SELECT EE.EventID FROM emailevents EE
+                                       INNER JOIN usersearchcriteria UC ON UC.CriteriaID = EE.CriteriaID
+                                       WHERE EE.CriteriaID = '$this->criteriaId' AND EE.EventType = 'Criteria' AND UC.OptEmail = 1 AND EE.IsDeleted = 0");
 
-        echo json_encode($response);
+            if (count($rows) > 0) {
+                $this->db->update("UPDATE usersearchcriteria SET OptEmail = 0
+                                   WHERE CriteriaID = '$this->criteriaId' AND OptEmail = 1");
+            } else {
+                $rows = $this->db->select("SELECT EE.EventID FROM emailevents EE
+                                           INNER JOIN usersearchcriteria UC ON UC.CriteriaID = EE.CriteriaID
+                                           WHERE EE.CriteriaID = '$this->criteriaId' AND EE.EventType = 'Criteria' AND UC.OptEmail = 0 AND EE.IsDeleted = 0");
+
+                if (count($rows) > 0) {
+                    $this->db->update("UPDATE usersearchcriteria SET OptEmail = 1
+                                       WHERE CriteriaID = '$this->criteriaId' AND OptEmail = 0");
+                }
+            }
+        }
+
+        private function getSearhces()
+        {
+            $rows = $this->db->select("SELECT * FROM usersearchcriteria
+                                       WHERE UserID = '$this->userId'");
+
+            $this->searches($rows);
+        }
+
+        private function getRecentSearhces()
+        {
+            $rows = $this->db->select("SELECT * FROM usersearchcriteria
+                                       WHERE UserID = '$this->userId'
+                                       ORDER BY SavedDate DESC
+                                       LIMIT 10");
+
+            $this->searches($rows);
+        }
+
+        private function searches($rows) {
+            $searches = array();
+
+            if (count($rows) > 0) {
+                foreach ($rows as $row) {
+                    $criteria = new stdClass();
+
+                    $criteria->id = $row['CriteriaID'];
+                    $criteria->userId = $row['UserID'];
+                    $criteria->minPrice = $row['MinPrice'];
+                    $criteria->maxPrice = $row['MaxPrice'];
+                    $criteria->beds = $row['Beds'];
+                    $criteria->properties = $row['PropertyType'];
+                    $criteria->criteria = $row['Criteria'];
+                    $criteria->isOptEmail = $row['OptEmail'] == 1 ? true : false;
+
+                    array_push($searches, $criteria);
+                }
+            }
+
+            $this->response = (object)(
+                array(
+                    'searches' => $searches
+                )
+            );
+
+            echo json_encode($this->response);
+        }
     }
 ?>

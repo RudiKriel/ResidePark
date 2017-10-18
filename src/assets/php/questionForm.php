@@ -1,28 +1,39 @@
 <?php
-    header("Access-Control-Allow-Origin:*");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-    header('Access-Control-Allow-Headers: X-HTTP-Method-Override, Content-Type, x-requested-with');
-    header('Content-Type: application/json');
+    class QuestionForm
+    {
+        private $firstName;
+        private $lastName;
+        private $phone;
+        private $email;
+        private $question;
+        private $mls_id;
+        private $mls_num;
+        private $mail;
 
-    require_once(dirname(__FILE__) . '/emailHandler.php');
+        public function __construct($parameters) {
+            require_once(dirname(__FILE__) . '/emailHandler.php');
 
-    $mail = new Email();
+            $this->mail = new Email();
+            $this->firstName = isset($parameters['firstName']) ? $parameters['firstName'] : '';
+            $this->lastName = isset($parameters['lastName']) ? $parameters['lastName'] : '';
+            $this->phone = isset($parameters['phone']) ? $parameters['phone'] : '';
+            $this->email = isset($parameters['email']) ? $parameters['email'] : '';
+            $this->question = isset($parameters['question']) ? $parameters['question'] : '';
+            $this->mls_id = isset($parameters['mls_id']) ? $parameters['mls_id'] : '';
+            $this->mls_num = isset($parameters['mls_num']) ? $parameters['mls_num'] : '';
+        }
 
-    $firstName = $_POST['firstName'];
-    $lastName = $_POST['lastName'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
-    $question = $_POST['question'];
-    $mls_id = $_POST['mls_id'];
-    $mls_num = $_POST['mls_num'];
+        function sendEmail()
+        {
+            $subject = 'Submit a question';
+            $body = "Hi,\n\n $this->question \n\n";
+            $body .= "Listing: \n mls id: $this->mls_id \n mls#: $this->mls_num \n\n";
+            $body .= "Contact me at $this->phone.\n\n";
+            $body .= "Kind regards";
 
-    $subject = 'Submit a question';
-    $body = "Hi,\n\n $question \n\n";
-    $body .= "Listing: \n mls id: $mls_id \n mls#: $mls_num \n\n";
-    $body .= "Contact me at $phone.\n\n";
-    $body .= "Kind regards";
-
-    $mail->setup();
-    $mail->buildEmail($email, $subject, $body);
-    $mail->send();
+            $this->mail->setup();
+            $this->mail->buildEmail($this->email, $subject, $body, $this->firstName, $this->lastName);
+            $this->mail->send();
+        }
+    }
 ?>

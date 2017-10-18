@@ -1,50 +1,52 @@
 <?php
-    header("Access-Control-Allow-Origin:*");
-    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
-    header('Access-Control-Allow-Headers: Authorization, X-HTTP-Method-Override, Content-Type, x-requested-with');
-    header('Content-Type: application/json');
+    class Signup
+    {
+        private $db;
+        private $username;
+        private $firstName;
+        private $lastName;
+        private $password;
 
-    require_once(dirname(__FILE__) . '/dbHandler.php');
+        public function __construct($parameters) {
+            require_once(dirname(__FILE__) . '/dbHandler.php');
 
-    $username = $_POST['username'];
-    $firstName = $_POST['firstName'];
-    $lastName = $_POST['lastName'];
-    $password = $_POST['password'];
+            $this->db = new Database();
 
-    $db = new Database();
+            //Prevent SQL injection
+            $this->username = $this->db->quote($parameters['username']);
+            $this->firstName = $this->db->quote($parameters['firstName']);
+            $this->lastName = $this->db->quote($parameters['lastName']);
+            $this->password = password_hash($this->db->quote($parameters['password']), PASSWORD_DEFAULT);
+        }
 
-    //Prevent SQL injection
-    $username = $db->quote($username);
-    $firstName = $db->quote($firstName);
-    $lastName = $db->quote($lastName);
-    $password = password_hash($db->quote($password), PASSWORD_DEFAULT);
+        function signup()
+        {
+            $rows = $this->db->select("SELECT Username FROM users
+                                       WHERE Username = $this->username");
 
-    $rows = $db->select("SELECT Username FROM users
-                         WHERE Username = $username");
+            $response = new stdClass();
 
-    $response = new stdClass();
+            if (!empty($rows) && count($rows) > 0) {
+                $response = (object)(
+                    array(
+                        'msg' => 'ERROR: Username is already in use',
+                        'success' => false
+                    )
+                );
+            }
+            else {
+                $this->db->insert("INSERT INTO users (UserName, FirstName, LastName, Password)
+                                   VALUES ($this->username, $this->firstName, $this->lastName, '$this->password')");
 
-    if (!empty($rows) && count($rows) > 0) {
-        $response = (object)(
-            array(
-                'msg' => 'ERROR: Username is already in use',
-                'success' => false
-            )
-        );
-    }
-    else {
-        if(!empty($_POST)) {
-            $db->insert("INSERT INTO users (UserName, FirstName, LastName, Password)
-                         VALUES ($username, $firstName, $lastName, '$password')");
+                $response = (object)(
+                    array(
+                        'msg' => $this->username . ' has been signed up successfully',
+                        'success' => true
+                    )
+                );
+            }
 
-            $response = (object)(
-                array(
-                    'msg' => $username . ' has been signed up successfully',
-                    'success' => true
-                )
-            );
+            echo json_encode($response);
         }
     }
-
-    echo json_encode($response);
 ?>
